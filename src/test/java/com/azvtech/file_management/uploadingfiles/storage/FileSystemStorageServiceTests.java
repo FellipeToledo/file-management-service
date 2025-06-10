@@ -12,7 +12,8 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Random;
+import java.util.List;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,12 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FileSystemStorageServiceTests {
 
     private final StorageProperties properties = new StorageProperties();
+    private final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "application/pdf");
+    private final List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "pdf");
     private FileSystemStorageService service;
+
 
     @BeforeEach
     public void init() {
-        properties.setLocation("target/files/" + Math.abs(new Random().nextLong()));
-        service = new FileSystemStorageService(properties);
+        properties.setLocation("target/files/" + Math.random());
+        service = new FileSystemStorageService(properties, allowedMimeTypes, allowedExtensions);
         service.init();
     }
 
@@ -35,7 +39,7 @@ public class FileSystemStorageServiceTests {
         service = null;
         properties.setLocation("");
         assertThrows(StorageException.class, () -> {
-            service = new FileSystemStorageService(properties);
+            service = new FileSystemStorageService(properties, allowedMimeTypes, allowedExtensions);
         });
     }
 

@@ -1,5 +1,9 @@
 package com.azvtech.file_management.storage;
 
+import com.azvtech.file_management.model.FileMetadata;
+import com.azvtech.file_management.repository.FileMetadataRepository;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -15,8 +19,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
@@ -30,12 +38,15 @@ public class FileSystemStorageService implements StorageService {
     @Value("${storage.allowed-extensions}")
     private final List<String> allowedExtensions;
 
+    private final FileMetadataRepository metadataRepo;
+
 
     @Autowired
-    public FileSystemStorageService(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions) {
-        this.allowedMimeTypes = allowedMimeTypes;
+    public FileSystemStorageService(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions, FileMetadataRepository metadataRepo) {
         this.rootLocation = Paths.get(properties.getLocation());
+        this.allowedMimeTypes = allowedMimeTypes;
         this.allowedExtensions = allowedExtensions;
+        this.metadataRepo = metadataRepo;
     }
 
     @Override
@@ -54,13 +65,16 @@ public class FileSystemStorageService implements StorageService {
             String originalFilename = file.getOriginalFilename();
             assert originalFilename != null;
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+            // Gera um nome único para o arquivo
+            String storedName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             if (!allowedExtensions.contains(fileExtension)) {
                 throw new StorageException("Extensão de arquivo não permitida: " + fileExtension);
             }
-            Path destinationFile = this.rootLocation.resolve(
-                            Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
-                    .normalize().toAbsolutePath();
+            // Salva o arquivo no sistema
+            Path destinationFile = this.rootLocation.resolve(storedName).normalize().toAbsolutePath();
+            Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
+
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check
                 throw new StorageException(
@@ -70,9 +84,34 @@ public class FileSystemStorageService implements StorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
+
+            // Calcula o checksum (SHA-256)
+            String checksum = calculateChecksum(file);
+
+            // Salva metadados no banco
+            FileMetadata metadata = new FileMetadata();
+            metadata.setOriginalName(file.getOriginalFilename());
+            metadata.setStoredName(storedName);
+            metadata.setContentType(file.getContentType());
+            metadata.setSize(file.getSize());
+            metadata.setChecksum(checksum);
+            metadata.setUploadDate(LocalDateTime.now());
+
+            metadataRepo.save(metadata);
+
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
+        }
+    }
+
+    private String calculateChecksum(MultipartFile file) throws IOException {
+        try (InputStream is = file.getInputStream()) {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(IOUtils.toByteArray(is));
+            return Hex.encodeHexString(hashBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new StorageException("Falha ao calcular checksum.", e);
         }
     }
 

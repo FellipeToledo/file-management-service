@@ -15,6 +15,32 @@
 </div>
 
 <div>
+    <table>
+        <thead>
+        <tr>
+            <th>Nome Original</th>
+            <th>Tipo</th>
+            <th>Tamanho (KB)</th>
+            <th>Data de Upload</th>
+            <th>Ação</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="file : ${files}">
+            <td th:text="${file.originalName}"></td>
+            <td th:text="${file.contentType}"></td>
+            <td th:text="${#numbers.formatDecimal(file.size / 1024, 1, 2)}"></td>
+            <td th:text="${#temporals.format(file.uploadDate, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <a th:href="@{'/files/' + ${file.storedName}}"
+                   th:text="'Download'"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
     <ul>
         <li th:each="file : ${files}">
             <a th:href="${file}" th:text="${file}" />
@@ -27,3 +53,4 @@
 
 </body>
 </html>
+

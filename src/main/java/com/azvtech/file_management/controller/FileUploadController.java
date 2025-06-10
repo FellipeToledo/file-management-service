@@ -1,5 +1,7 @@
 package com.azvtech.file_management.controller;
 
+import com.azvtech.file_management.model.FileMetadata;
+import com.azvtech.file_management.repository.FileMetadataRepository;
 import com.azvtech.file_management.storage.StorageException;
 import com.azvtech.file_management.storage.StorageService;
 import com.azvtech.file_management.storage.StorageFileNotFoundException;
@@ -15,26 +17,25 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 public class FileUploadController {
 
     private final StorageService storageService;
+    private final FileMetadataRepository metadataRepo;
 
     @Autowired
-    public FileUploadController(StorageService storageService) {
+    public FileUploadController(StorageService storageService, FileMetadataRepository metadataRepo) {
         this.storageService = storageService;
+        this.metadataRepo = metadataRepo;
     }
 
     @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
-
-        model.addAttribute("files", storageService.loadAll().map(
-                        path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
-                                "serveFile", path.getFileName().toString()).build().toUri().toString())
-                .collect(Collectors.toList()));
-
+    public String listUploadedFiles(Model model) {
+        List<FileMetadata> files = metadataRepo.findAll();
+        model.addAttribute("files", files);
         return "uploadForm";
     }
 
