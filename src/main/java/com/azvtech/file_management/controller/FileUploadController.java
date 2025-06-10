@@ -1,5 +1,6 @@
 package com.azvtech.file_management.controller;
 
+import com.azvtech.file_management.storage.StorageException;
 import com.azvtech.file_management.storage.StorageService;
 import com.azvtech.file_management.storage.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,13 @@ public class FileUploadController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
 
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        try {
+            storageService.store(file);
+            redirectAttributes.addFlashAttribute("message",
+                    "Upload realizado com sucesso: " + file.getOriginalFilename());
+        } catch (StorageException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/";
     }
 

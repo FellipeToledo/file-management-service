@@ -1,6 +1,7 @@
 package com.azvtech.file_management.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -22,21 +24,39 @@ public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
 
+    @Value("${storage.allowed-mime-types}")
+    private final List<String> allowedMimeTypes;
+
+    @Value("${storage.allowed-extensions}")
+    private final List<String> allowedExtensions;
+
+
     @Autowired
-    public FileSystemStorageService(StorageProperties properties) {
-
-        if(properties.getLocation().trim().isEmpty()){
-            throw new StorageException("File upload location can not be Empty.");
-        }
-
+    public FileSystemStorageService(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions) {
+        this.allowedMimeTypes = allowedMimeTypes;
         this.rootLocation = Paths.get(properties.getLocation());
+        this.allowedExtensions = allowedExtensions;
     }
 
     @Override
     public void store(MultipartFile file) {
         try {
+            // Validação 1: Arquivo vazio
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
+            }
+            // Validação 2: Tipo MIME permitido
+            String fileContentType = file.getContentType();
+            if (!allowedMimeTypes.contains(fileContentType)) {
+                throw new StorageException("Tipo de arquivo não suportado: " + fileContentType);
+            }
+            // Validação 3: Extensão permitida (backup para MIME inválido)
+            String originalFilename = file.getOriginalFilename();
+            assert originalFilename != null;
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+
+            if (!allowedExtensions.contains(fileExtension)) {
+                throw new StorageException("Extensão de arquivo não permitida: " + fileExtension);
             }
             Path destinationFile = this.rootLocation.resolve(
                             Paths.get(Objects.requireNonNull(file.getOriginalFilename())))

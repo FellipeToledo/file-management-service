@@ -22,5 +22,8 @@
     </ul>
 </div>
 
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
 </body>
 </html>
