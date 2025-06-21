@@ -1,5 +1,7 @@
 package com.azvtech.file_management.storage;
 
+import com.azvtech.file_management.exception.StorageException;
+import com.azvtech.file_management.exception.StorageFileNotFoundException;
 import com.azvtech.file_management.model.FileMetadata;
 import com.azvtech.file_management.repository.FileMetadataRepository;
 import org.apache.commons.codec.binary.Hex;
@@ -22,13 +24,13 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
-public class FileSystemStorageService implements StorageService {
+public class StorageServiceImpl implements StorageService {
 
     private final Path rootLocation;
 
@@ -42,7 +44,7 @@ public class FileSystemStorageService implements StorageService {
 
 
     @Autowired
-    public FileSystemStorageService(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions, FileMetadataRepository metadataRepo) {
+    public StorageServiceImpl(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions, FileMetadataRepository metadataRepo) {
         this.rootLocation = Paths.get(properties.getLocation());
         this.allowedMimeTypes = allowedMimeTypes;
         this.allowedExtensions = allowedExtensions;
@@ -105,6 +107,39 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
+    @Override
+    public void storeMultiple(MultipartFile[] files) {
+        if (files == null || files.length == 0) {
+            throw new StorageException("Nenhum arquivo enviado.");
+        }
+
+        List<String> errors = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            System.out.println(file.getContentType());
+            System.out.println(file.getName());
+            System.out.println(file.getSize());
+            System.out.println(file.getOriginalFilename());
+
+            try {
+                if (!file.isEmpty()) {
+                    store(file);
+                }
+            } catch (StorageException e) {
+                errors.add(file.getOriginalFilename() + ": " + e.getMessage());
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new StorageException("Erros no upload: " + String.join("; ", errors));
+        }
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return metadataRepo.existsById(id);
+    }
+
     private String calculateChecksum(MultipartFile file) throws IOException {
         try (InputStream is = file.getInputStream()) {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -126,6 +161,11 @@ public class FileSystemStorageService implements StorageService {
             throw new StorageException("Failed to read stored files", e);
         }
 
+    }
+
+    @Override
+    public List<FileMetadata> findAll() {
+        return metadataRepo.findAll();
     }
 
     @Override
@@ -158,6 +198,11 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public FileMetadata findByStoredName(String storedName) {
+        return metadataRepo.findByStoredName(storedName);
+    }
+
+    @Override
     public void init() {
         try {
             Files.createDirectories(rootLocation);
@@ -166,4 +211,6 @@ public class FileSystemStorageService implements StorageService {
             throw new StorageException("Could not initialize storage", e);
         }
     }
+
+
 }

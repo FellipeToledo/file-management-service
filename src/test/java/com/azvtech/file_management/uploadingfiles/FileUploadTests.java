@@ -1,7 +1,7 @@
 package com.azvtech.file_management.uploadingfiles;
 
 import com.azvtech.file_management.storage.StorageService;
-import com.azvtech.file_management.storage.StorageFileNotFoundException;
+import com.azvtech.file_management.exception.StorageFileNotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

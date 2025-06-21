@@ -1,4 +1,19 @@
 <html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <style>
+        .file-actions a {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 4px 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .file-actions a:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
 <body>
 
 <div th:if="${message}">
@@ -6,10 +21,22 @@
 </div>
 
 <div>
-    <form method="POST" enctype="multipart/form-data" action="/">
+    <form method="POST" enctype="multipart/form-data" action="/web/file/upload">
         <table>
             <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
             <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+        </table>
+    </form>
+</div>
+
+<div>
+    <form method="POST" enctype="multipart/form-data" action="/web/file/upload-multiple">
+        <table>
+            <tr>
+                <td>Arquivos para upload (múltiplos):</td>
+                <td><input type="file" name="files" multiple /></td>
+            </tr>
+            <tr><td></td><td><input type="submit" value="Upload Múltiplo" /></td></tr>
         </table>
     </form>
 </div>
@@ -25,6 +52,7 @@
             <th>Ação</th>
         </tr>
         </thead>
+
         <tbody>
         <tr th:each="file : ${files}">
             <td th:text="${file.originalName}"></td>
@@ -32,7 +60,16 @@
             <td th:text="${#numbers.formatDecimal(file.size / 1024, 1, 2)}"></td>
             <td th:text="${#temporals.format(file.uploadDate, 'dd/MM/yyyy HH:mm')}"></td>
             <td>
-                <a th:href="@{'/files/' + ${file.storedName}}"
+                <!-- Link para visualização (se suportado) -->
+                <a th:if="${#strings.startsWith(file.contentType, 'image/')
+                          or file.contentType == 'application/pdf'
+                          or #strings.startsWith(file.contentType, 'text/')}"
+                   th:href="@{'/api/v1/file/download/' + ${file.storedName} + '?view=true'}"
+                   target="_blank"
+                   th:text="'Visualizar'"></a>
+
+                <!-- Link para download -->
+                <a th:href="@{'/api/v1/file/download/' + ${file.storedName}}"
                    th:text="'Download'"></a>
             </td>
         </tr>
@@ -40,17 +77,8 @@
     </table>
 </div>
 
-<div>
-    <ul>
-        <li th:each="file : ${files}">
-            <a th:href="${file}" th:text="${file}" />
-        </li>
-    </ul>
-</div>
-
 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
 </body>
 </html>
-

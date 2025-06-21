@@ -1,4 +1,4 @@
-package com.azvtech.file_management.storage;
+package com.azvtech.file_management.exception;
 
 public class StorageException extends RuntimeException {
 

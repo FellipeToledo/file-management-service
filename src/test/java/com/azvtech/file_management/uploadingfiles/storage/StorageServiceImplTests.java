@@ -1,7 +1,7 @@
 package com.azvtech.file_management.uploadingfiles.storage;
 
-import com.azvtech.file_management.storage.FileSystemStorageService;
-import com.azvtech.file_management.storage.StorageException;
+import com.azvtech.file_management.storage.StorageServiceImpl;
+import com.azvtech.file_management.exception.StorageException;
 import com.azvtech.file_management.storage.StorageProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,18 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileSystemStorageServiceTests {
+public class StorageServiceImplTests {
 
     private final StorageProperties properties = new StorageProperties();
     private final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "application/pdf");
     private final List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "pdf");
-    private FileSystemStorageService service;
+    private StorageServiceImpl service;
 
 
     @BeforeEach
     public void init() {
         properties.setLocation("target/files/" + Math.random());
-        service = new FileSystemStorageService(properties, allowedMimeTypes, allowedExtensions);
+        service = new StorageServiceImpl(properties, allowedMimeTypes, allowedExtensions);
         service.init();
     }
 
@@ -39,7 +39,7 @@ public class FileSystemStorageServiceTests {
         service = null;
         properties.setLocation("");
         assertThrows(StorageException.class, () -> {
-            service = new FileSystemStorageService(properties, allowedMimeTypes, allowedExtensions);
+            service = new StorageServiceImpl(properties, allowedMimeTypes, allowedExtensions);
         });
     }
 
