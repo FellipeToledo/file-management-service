@@ -4,6 +4,7 @@ import com.azvtech.file_management.exception.StorageException;
 import com.azvtech.file_management.exception.StorageFileNotFoundException;
 import com.azvtech.file_management.model.FileMetadata;
 import com.azvtech.file_management.repository.FileMetadataRepository;
+import com.azvtech.file_management.validation.FileValidator;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -33,79 +35,84 @@ import java.util.stream.Stream;
 public class StorageServiceImpl implements StorageService {
 
     private final Path rootLocation;
-
-    @Value("${storage.allowed-mime-types}")
-    private final List<String> allowedMimeTypes;
-
-    @Value("${storage.allowed-extensions}")
-    private final List<String> allowedExtensions;
-
+    private final FileValidator fileValidator;
     private final FileMetadataRepository metadataRepo;
 
 
     @Autowired
-    public StorageServiceImpl(StorageProperties properties, List<String> allowedMimeTypes, List<String> allowedExtensions, FileMetadataRepository metadataRepo) {
+    public StorageServiceImpl(
+            StorageProperties properties,
+            @Value("${storage.allowed-mime-types}.split(',')}")
+            Set<String> allowedMimeTypes,
+            @Value("#{'${storage.allowed-extensions}'.split(',')}")
+            Set<String> allowedExtensions,
+            @Value("${storage.max-file-size-mb}")
+            long maxFileSizeMB,
+            FileMetadataRepository metadataRepo) {
+
         this.rootLocation = Paths.get(properties.getLocation());
-        this.allowedMimeTypes = allowedMimeTypes;
-        this.allowedExtensions = allowedExtensions;
+        this.fileValidator = new FileValidator(
+                allowedMimeTypes,
+                allowedExtensions,
+                maxFileSizeMB * 1024 * 1024
+        );
         this.metadataRepo = metadataRepo;
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public void init() {
         try {
-            // Validação 1: Arquivo vazio
-            if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file.");
-            }
-            // Validação 2: Tipo MIME permitido
-            String fileContentType = file.getContentType();
-            if (!allowedMimeTypes.contains(fileContentType)) {
-                throw new StorageException("Tipo de arquivo não suportado: " + fileContentType);
-            }
-            // Validação 3: Extensão permitida (backup para MIME inválido)
-            String originalFilename = file.getOriginalFilename();
-            assert originalFilename != null;
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-            // Gera um nome único para o arquivo
-            String storedName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            if (!allowedExtensions.contains(fileExtension)) {
-                throw new StorageException("Extensão de arquivo não permitida: " + fileExtension);
-            }
-            // Salva o arquivo no sistema
-            Path destinationFile = this.rootLocation.resolve(storedName).normalize().toAbsolutePath();
-            Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
-
-            if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
-                // This is a security check
-                throw new StorageException(
-                        "Cannot store file outside current directory.");
-            }
-            try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, destinationFile,
-                        StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            // Calcula o checksum (SHA-256)
-            String checksum = calculateChecksum(file);
-
-            // Salva metadados no banco
-            FileMetadata metadata = new FileMetadata();
-            metadata.setOriginalName(file.getOriginalFilename());
-            metadata.setStoredName(storedName);
-            metadata.setContentType(file.getContentType());
-            metadata.setSize(file.getSize());
-            metadata.setChecksum(checksum);
-            metadata.setUploadDate(LocalDateTime.now());
-
-            metadataRepo.save(metadata);
-
-        }
-        catch (IOException e) {
-            throw new StorageException("Failed to store file.", e);
+            Files.createDirectories(rootLocation);
+        } catch (IOException e) {
+            throw new StorageException("Could not initialize storage", e);
         }
     }
+
+
+
+    @Override
+    public void store(MultipartFile file) {
+        fileValidator.validate(file);
+
+        try {
+            String storedName = generateStoredFilename(file);
+            Path destinationFile = resolveSafePath(storedName);
+            saveFileContent(file, destinationFile);
+            saveFileMetadata(file, storedName);
+        } catch (IOException e) {
+            throw new StorageException("Failed to store file", e);
+        }
+    }
+
+    private String generateStoredFilename(MultipartFile file) {
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+    }
+
+    private Path resolveSafePath(String filename) {
+        Path destinationFile = rootLocation.resolve(filename).normalize().toAbsolutePath();
+        if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
+            throw new StorageException("Cannot store file outside current directory");
+        }
+        return destinationFile;
+    }
+
+    private void saveFileContent(MultipartFile file, Path destinationFile) throws IOException {
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    private void saveFileMetadata(MultipartFile file, String storedName) throws IOException {
+        FileMetadata metadata = new FileMetadata();
+        metadata.setOriginalName(file.getOriginalFilename());
+        metadata.setStoredName(storedName);
+        metadata.setContentType(file.getContentType());
+        metadata.setSize(file.getSize());
+        metadata.setChecksum(calculateChecksum(file));
+        metadata.setUploadDate(LocalDateTime.now());
+        metadataRepo.save(metadata);
+    }
+
 
     @Override
     public void storeMultiple(MultipartFile[] files) {
@@ -146,7 +153,7 @@ public class StorageServiceImpl implements StorageService {
             byte[] hashBytes = digest.digest(IOUtils.toByteArray(is));
             return Hex.encodeHexString(hashBytes);
         } catch (NoSuchAlgorithmException e) {
-            throw new StorageException("Falha ao calcular checksum.", e);
+            throw new StorageException("Failed to calculate checksum", e);
         }
     }
 
@@ -201,16 +208,4 @@ public class StorageServiceImpl implements StorageService {
     public FileMetadata findByStoredName(String storedName) {
         return metadataRepo.findByStoredName(storedName);
     }
-
-    @Override
-    public void init() {
-        try {
-            Files.createDirectories(rootLocation);
-        }
-        catch (IOException e) {
-            throw new StorageException("Could not initialize storage", e);
-        }
-    }
-
-
 }

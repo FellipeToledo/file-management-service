@@ -7,8 +7,6 @@ import java.util.List;
 public class StorageProperties {
 
     private String location = "upload-dir";
-    private List<String> allowedMimeTypes;
-    private List<String> allowedExtensions;
 
     public String getLocation() {
         return location;
@@ -17,18 +15,4 @@ public class StorageProperties {
         this.location = location;
     }
 
-   public List<String> getAllowedMimeTypes() {
-        return allowedMimeTypes;
-    }
-    public void setAllowedMimeTypes(List<String> allowedMimeTypes) {
-        this.allowedMimeTypes = allowedMimeTypes;
-    }
-
-    public List<String> getAllowedExtensions() {
-        return allowedExtensions;
-    }
-
-    public void setAllowedExtensions(List<String> allowedExtensions) {
-        this.allowedExtensions = allowedExtensions;
-    }
 }
