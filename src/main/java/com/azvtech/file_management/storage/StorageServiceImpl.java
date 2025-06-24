@@ -114,6 +114,17 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public void delete(String originalName) {
+        FileMetadata metadata = metadataRepo.findByOriginalName(originalName);
+        if (metadata == null) {
+            throw new StorageFileNotFoundException("File not found: " + originalName);
+        }
+
+        gridFsService.deleteFile(metadata.getGridFsId());
+        metadataRepo.delete(metadata);
+    }
+
+    @Override
     public List<FileMetadata> findAll() {
         return metadataRepo.findAll();
     }

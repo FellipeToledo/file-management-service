@@ -1,84 +1,360 @@
-<html xmlns:th="https://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Upload de Arquivos</title>
     <style>
+        :root {
+            --primary-color: #4285f4;
+            --hover-color: #3367d6;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+        }
+
+        .upload-section {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .upload-section h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: var(--hover-color);
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        button, .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover, .btn:hover {
+            background: var(--hover-color);
+        }
+
+        .btn-delete {
+            background: var(--error-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #c62828;
+        }
+
+        .file-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .file-table th, .file-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .file-table th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+
+        .file-table tr:hover {
+            background: rgba(66, 133, 244, 0.05);
+        }
+
         .file-actions a {
             display: inline-block;
             margin-right: 8px;
-            padding: 4px 8px;
-            background: #f0f0f0;
+            padding: 6px 12px;
+            background: var(--primary-color);
+            color: white;
             border-radius: 4px;
             text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s;
         }
+
         .file-actions a:hover {
-            background: #e0e0e0;
+            background: var(--hover-color);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background-color: #e6f4ea;
+            color: var(--success-color);
+            border: 1px solid #c1e1c5;
+        }
+
+        .alert-danger {
+            background-color: #fce8e6;
+            color: var(--error-color);
+            border: 1px solid #f5c0b8;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .drag-drop-area:hover, .drag-drop-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(66, 133, 244, 0.05);
+        }
+
+        .drag-drop-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .file-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .upload-section {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
+<h1>Sistema de Upload de Arquivos</h1>
 
-<div th:if="${message}">
-    <h2 th:text="${message}"/>
-</div>
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-<div>
-    <form method="POST" enctype="multipart/form-data" action="/web/file/upload">
-        <table>
-            <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
-            <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
-        </table>
+<section class="upload-section">
+    <h2>Upload Simples</h2>
+    <form method="POST" enctype="multipart/form-data" action="/web/file/upload" id="singleUploadForm">
+        <div class="form-group">
+            <label for="singleFile">Selecione um arquivo:</label>
+            <div class="file-input-container">
+                <label for="singleFile" class="file-input-label">Escolher Arquivo</label>
+                <input type="file" name="file" id="singleFile" class="file-input" required>
+                <span id="singleFileName" class="file-name">Nenhum arquivo selecionado</span>
+            </div>
+        </div>
+        <button type="submit">Enviar Arquivo</button>
     </form>
-</div>
+</section>
 
-<div>
-    <form method="POST" enctype="multipart/form-data" action="/web/file/upload-multiple">
-        <table>
-            <tr>
-                <td>Arquivos para upload (múltiplos):</td>
-                <td><input type="file" name="files" multiple /></td>
-            </tr>
-            <tr><td></td><td><input type="submit" value="Upload Múltiplo" /></td></tr>
-        </table>
+<section class="upload-section">
+    <h2>Upload Múltiplo</h2>
+    <form method="POST" enctype="multipart/form-data" action="/web/file/upload-multiple" id="multipleUploadForm">
+        <div class="form-group">
+            <label for="multipleFiles">Selecione vários arquivos:</label>
+            <div class="file-input-container">
+                <label for="multipleFiles" class="file-input-label">Escolher Arquivos</label>
+                <input type="file" name="files" id="multipleFiles" class="file-input" multiple required>
+                <span id="multipleFilesName" class="file-name">Nenhum arquivo selecionado</span>
+            </div>
+        </div>
+
+        <div class="drag-drop-area" id="dragDropArea">
+            <div class="drag-drop-icon">⬆️</div>
+            <p>Arraste e solte seus arquivos aqui</p>
+            <p><small>ou</small></p>
+            <button type="button" class="btn" onclick="document.getElementById('multipleFiles').click()">Selecionar Arquivos</button>
+        </div>
+
+        <button type="submit">Enviar Arquivos</button>
     </form>
-</div>
+</section>
 
-<div>
-    <table>
+<section>
+    <h2>Arquivos Enviados</h2>
+    <table class="file-table">
         <thead>
         <tr>
             <th>Nome Original</th>
             <th>Tipo</th>
             <th>Tamanho (KB)</th>
             <th>Data de Upload</th>
-            <th>Ação</th>
+            <th>Ações</th>
         </tr>
         </thead>
-
         <tbody>
         <tr th:each="file : ${files}">
             <td th:text="${file.originalName}"></td>
             <td th:text="${file.contentType}"></td>
             <td th:text="${#numbers.formatDecimal(file.size / 1024, 1, 2)}"></td>
             <td th:text="${#temporals.format(file.uploadDate, 'dd/MM/yyyy HH:mm')}"></td>
-            <td>
-                <!-- Link para visualização (se suportado) -->
-                <a th:if="${#strings.startsWith(file.contentType, 'image/')
-                          or file.contentType == 'application/pdf'
-                          or #strings.startsWith(file.contentType, 'text/')}"
+            <td class="file-actions">
+                <a th:if="${#strings.startsWith(file.contentType, 'image/') or file.contentType == 'application/pdf' or #strings.startsWith(file.contentType, 'text/')}"
                    th:href="@{'/api/v1/file/download/' + ${file.originalName} + '?view=true'}"
                    target="_blank"
-                   th:text="'Visualizar'"></a>
-
-                <!-- Link para download -->
+                   th:text="'Visualizar'"
+                   aria-label="Visualizar arquivo"></a>
                 <a th:href="@{'/api/v1/file/download/' + ${file.originalName}}"
-                   th:text="'Download'"></a>
+                   th:text="'Download'"
+                   aria-label="Download do arquivo"
+                   download></a>
             </td>
+            <td class="file-actions">
+                <a th:if="${#strings.startsWith(file.contentType, 'image/') or file.contentType == 'application/pdf' or #strings.startsWith(file.contentType, 'text/')}"
+                   th:href="@{'/api/v1/file/download/' + ${file.originalName} + '?view=true'}"
+                   target="_blank"
+                   th:text="'Visualizar'"
+                   aria-label="Visualizar arquivo"></a>
+                <a th:href="@{'/api/v1/file/download/' + ${file.originalName}}"
+                   th:text="'Download'"
+                   aria-label="Download do arquivo"
+                   download></a>
+                <form th:action="@{/web/file/delete}" method="post" style="display: inline;">
+                    <input type="hidden" name="originalName" th:value="${file.originalName}">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">Deletar</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(files)}">
+            <td colspan="5" style="text-align: center;">Nenhum arquivo enviado ainda</td>
         </tr>
         </tbody>
     </table>
-</div>
+</section>
 
-<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+<script>
+    // Atualiza o nome do arquivo exibido
+    document.getElementById('singleFile').addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : 'Nenhum arquivo selecionado';
+        document.getElementById('singleFileName').textContent = fileName;
+    });
 
+    document.getElementById('multipleFiles').addEventListener('change', function(e) {
+        const fileCount = e.target.files.length;
+        const fileName = fileCount === 0 ? 'Nenhum arquivo selecionado' :
+                          fileCount === 1 ? e.target.files[0].name :
+                          fileCount + ' arquivos selecionados';
+        document.getElementById('multipleFilesName').textContent = fileName;
+    });
+
+    // Drag and drop functionality
+    const dragDropArea = document.getElementById('dragDropArea');
+    const multipleFilesInput = document.getElementById('multipleFiles');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight() {
+        dragDropArea.classList.add('dragover');
+    }
+
+    function unhighlight() {
+        dragDropArea.classList.remove('dragover');
+    }
+
+    dragDropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        multipleFilesInput.files = files;
+
+        // Atualiza o texto mostrando os arquivos
+        const fileCount = files.length;
+        const fileName = fileCount === 0 ? 'Nenhum arquivo selecionado' :
+                          fileCount === 1 ? files[0].name :
+                          fileCount + ' arquivos selecionados';
+        document.getElementById('multipleFilesName').textContent = fileName;
+    }
+</script>
 </body>
 </html>

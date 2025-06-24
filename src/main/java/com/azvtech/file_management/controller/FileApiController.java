@@ -1,6 +1,7 @@
 package com.azvtech.file_management.controller;
 
 import com.azvtech.file_management.exception.StorageException;
+import com.azvtech.file_management.exception.StorageFileNotFoundException;
 import com.azvtech.file_management.model.FileMetadata;
 import com.azvtech.file_management.storage.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,8 +63,6 @@ public class FileApiController {
                 .body(file);
     }
 
-
-
     @PostMapping("/upload")
     @Operation(
             summary = "Single file upload",
@@ -123,4 +122,26 @@ public class FileApiController {
                         contentType.startsWith("text/")
         );
     }
+
+    @DeleteMapping("/delete/{originalName:.+}")
+    @Operation(
+            summary = "Delete a file",
+            description = "Deletes a file from storage and its metadata",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "File deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "File not found")
+            })
+    public ResponseEntity<Map<String, String>> deleteFile(
+            @PathVariable String originalName) {
+
+        try {
+            storageService.delete(originalName);
+            return ResponseEntity.ok(Map.of(
+                    "message", "File deleted successfully: " + originalName
+            ));
+        } catch (StorageFileNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

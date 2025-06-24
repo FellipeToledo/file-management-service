@@ -19,4 +19,6 @@ public interface StorageService {
     FileMetadata findByOriginalName(String originalName);
 
     List<FileMetadata> findAll();
+
+    void delete(String originalName);
 }

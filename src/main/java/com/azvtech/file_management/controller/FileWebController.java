@@ -60,4 +60,18 @@ public class FileWebController {
         }
         return "redirect:/web/file/upload";
     }
+
+    @PostMapping("/delete")
+    public String handleFileDelete(@RequestParam("originalName") String originalName,
+                                   RedirectAttributes redirectAttributes) {
+
+        try {
+            storageService.delete(originalName);
+            redirectAttributes.addFlashAttribute("message",
+                    "File deleted successfully: " + originalName);
+        } catch (StorageException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/web/file/upload";
+    }
 }
