@@ -8,7 +8,7 @@ target/
 logs/
 
 ### FILE ###
-upload-dir/
+uploads/
 
 ### STS ###
 .apt_generated

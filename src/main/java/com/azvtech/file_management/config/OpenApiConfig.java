@@ -15,9 +15,9 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("File Management API")
                         .version("1.0.0")
-                        .description("API para gerenciamento de upload/download de arquivos")
+                        .description("API for file management")
                         .contact(new Contact()
-                                .name("Suporte")
+                                .name("Support")
                                 .email("suporte@azvtech.com")));
     }
 }

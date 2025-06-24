@@ -1,50 +1,49 @@
 package com.azvtech.file_management.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "file_metadata")
-@Schema(description = "Metadados de um arquivo armazenado")
+@Document(collection = "event-files")
+@Schema(description = "Metadata from a stored file")
 public class FileMetadata {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Schema(description = "Nome original do arquivo", example = "documento.pdf")
-    @Column(nullable = false)
+    @Schema(description = "Original file name", example = "document.pdf")
     private String originalName;
 
-    @Schema(description = "Nome físico no sistema", example = "UUID + extensão")
-    @Column(nullable = false)
-    private String storedName;
+    @Schema(description = "File ID in GridFS", example = "ObjectId('...')")
+    private String gridFsId;
 
-    @Schema(description = "Tipo MIME do arquivo", example = "application/pdf")
-    @Column(nullable = false)
+    @Schema(description = "MIME file type", example = "application/pdf")
     private String contentType;
 
-    @Schema(description = "Tamanho em bytes", example = "2545")
-    @Column(nullable = false)
+    @Schema(description = "Size in bytes", example = "2545")
     private long size;
 
-    @Schema(description = "Hash SHA-256 para verificação de integridade")
-    @Column(nullable = false)
+    @Schema(description = "SHA-256 hash for integrity verification")
     private String checksum;
 
-    @Column(nullable = false)
+    private byte[] file;
+
     private LocalDateTime uploadDate;
 
-    // TODO: associar ao usuário
-    // @ManyToOne
-    // private User owner;
+    /*
+     TODO:  associate with the user
+     @ManyToOne
+     private User owner;
+    */
 
-    public Long getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -56,12 +55,12 @@ public class FileMetadata {
         this.originalName = originalName;
     }
 
-    public String getStoredName() {
-        return storedName;
+    public String getGridFsId() {
+        return gridFsId;
     }
 
-    public void setStoredName(String storedName) {
-        this.storedName = storedName;
+    public void setGridFsId(String gridFsId) {
+        this.gridFsId = gridFsId;
     }
 
     public String getContentType() {

@@ -35,7 +35,7 @@ public class FileWebController {
         try {
             storageService.store(file);
             redirectAttributes.addFlashAttribute("message",
-                    "Upload realizado com sucesso: " + file.getOriginalFilename());
+                    "Upload successful: " + file.getOriginalFilename());
         } catch (StorageException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -48,13 +48,13 @@ public class FileWebController {
 
         try {
             if (files == null || files.length == 0) {
-                redirectAttributes.addFlashAttribute("error", "Nenhum arquivo selecionado");
+                redirectAttributes.addFlashAttribute("error", "No files selected");
                 return "redirect:/web/file/upload";
             }
 
             storageService.storeMultiple(files);
             redirectAttributes.addFlashAttribute("message",
-                    files.length + " arquivos foram enviados com sucesso");
+                    files.length + " files were sent successfully");
         } catch (StorageException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

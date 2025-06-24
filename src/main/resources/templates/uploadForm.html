@@ -64,12 +64,12 @@
                 <a th:if="${#strings.startsWith(file.contentType, 'image/')
                           or file.contentType == 'application/pdf'
                           or #strings.startsWith(file.contentType, 'text/')}"
-                   th:href="@{'/api/v1/file/download/' + ${file.storedName} + '?view=true'}"
+                   th:href="@{'/api/v1/file/download/' + ${file.originalName} + '?view=true'}"
                    target="_blank"
                    th:text="'Visualizar'"></a>
 
                 <!-- Link para download -->
-                <a th:href="@{'/api/v1/file/download/' + ${file.storedName}}"
+                <a th:href="@{'/api/v1/file/download/' + ${file.originalName}}"
                    th:text="'Download'"></a>
             </td>
         </tr>

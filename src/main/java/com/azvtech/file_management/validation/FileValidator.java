@@ -1,7 +1,6 @@
 package com.azvtech.file_management.validation;
-
-
 import com.azvtech.file_management.exception.StorageException;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
@@ -22,7 +21,7 @@ public class FileValidator {
 
     public void validate(MultipartFile file) {
         if (file == null) {
-            throw new StorageException("Arquivo não pode ser nulo");
+            throw new StorageException("File cannot be null");
         }
 
         validateEmptyFile(file);
@@ -34,14 +33,14 @@ public class FileValidator {
 
     private void validateEmptyFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new StorageException("Arquivo vazio não permitido");
+            throw new StorageException("Empty file not allowed");
         }
     }
 
     private void validateFileSize(MultipartFile file) {
         if (file.getSize() > maxFileSize) {
             throw new StorageException(
-                    String.format("Tamanho do arquivo excede o limite de %dMB",
+                    String.format("File size exceeds %dMB limit",
                             maxFileSize / (1024 * 1024)));
         }
     }
@@ -50,14 +49,14 @@ public class FileValidator {
         String contentType = file.getContentType();
         if (contentType == null || !allowedMimeTypes.contains(contentType)) {
             throw new StorageException(
-                    String.format("Tipo MIME '%s' não é suportado", contentType));
+                    String.format("MIME type ‘%s’ is not supported", contentType));
         }
     }
 
     private void validateFileExtension(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.lastIndexOf(".") == -1) {
-            throw new StorageException("Nome de arquivo inválido");
+            throw new StorageException("Invalid file name");
         }
 
         String fileExtension = originalFilename.substring(
@@ -65,7 +64,7 @@ public class FileValidator {
 
         if (!allowedExtensions.contains(fileExtension)) {
             throw new StorageException(
-                    String.format("Extensão '.%s' não é permitida", fileExtension));
+                    String.format("Extension ‘.%s’ is not allowed", fileExtension));
         }
     }
 
@@ -78,7 +77,7 @@ public class FileValidator {
 
         if (!isMimeTypeMatchesExtension(contentType, fileExtension)) {
             throw new StorageException(
-                    "Extensão do arquivo não corresponde ao tipo MIME declarado");
+                    "File extension does not match the declared MIME type");
         }
     }
 

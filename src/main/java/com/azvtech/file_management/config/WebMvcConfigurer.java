@@ -17,10 +17,10 @@ public class WebMvcConfigurer {
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .exposedHeaders("Authorization", "Content-Disposition") // Importante para downloads
+                        .exposedHeaders("Authorization", "Content-Disposition")
                         .allowCredentials(true);
 
-                // Para Actuator (se necessário)
+                // Actuator
                 registry.addMapping("/actuator/**")
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods("GET");
