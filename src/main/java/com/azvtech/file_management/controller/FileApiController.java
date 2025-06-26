@@ -26,7 +26,6 @@ public class FileApiController {
 
     private final StorageService storageService;
 
-    @Autowired
     public FileApiController(StorageService storageService) {
         this.storageService = storageService;
     }
@@ -48,18 +47,17 @@ public class FileApiController {
             return ResponseEntity.notFound().build();
         }
 
-        Resource file = storageService.loadAsResource(metadata.getGridFsId());
-
+        Resource file = storageService.loadAsResource(metadata.gridFsId());
         if (file == null) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "true".equals(view) && isViewable(metadata.getContentType()) ?
+                        "true".equals(view) && isViewable(metadata.contentType()) ?
                                 "inline" : "attachment")
-                .header("filename", metadata.getOriginalName())
-                .contentType(MediaType.parseMediaType(metadata.getContentType()))
+                .header("filename", metadata.originalName())
+                .contentType(MediaType.parseMediaType(metadata.contentType()))
                 .body(file);
     }
 

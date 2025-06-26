@@ -6,9 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface StorageService {
+public sealed interface StorageService permits StorageServiceImpl{
 
-    void init();
+    default void init() {
+    }
 
     void store(MultipartFile file);
 

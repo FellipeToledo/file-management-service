@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class StorageServiceImpl implements StorageService {
+public final class StorageServiceImpl implements StorageService {
 
     private final GridFsService gridFsService;
     private final FileValidator fileValidator;
@@ -39,16 +39,12 @@ public class StorageServiceImpl implements StorageService {
             GridFsService gridFsService) {
 
         this.fileValidator = new FileValidator(
-                allowedMimeTypes,
-                allowedExtensions,
+                Set.copyOf(allowedMimeTypes),
+                Set.copyOf(allowedExtensions),
                 maxFileSizeMB * 1024 * 1024
         );
         this.metadataRepo = metadataRepo;
         this.gridFsService = gridFsService;
-    }
-
-    @Override
-    public void init() {
     }
 
     @Override
@@ -64,13 +60,15 @@ public class StorageServiceImpl implements StorageService {
     }
 
     private void saveFileMetadata(MultipartFile file, String gridFsId) throws IOException {
-        FileMetadata metadata = new FileMetadata();
-        metadata.setOriginalName(file.getOriginalFilename());
-        metadata.setGridFsId(gridFsId);
-        metadata.setContentType(file.getContentType());
-        metadata.setSize(file.getSize());
-        metadata.setChecksum(calculateChecksum(file));
-        metadata.setUploadDate(LocalDateTime.now());
+        var metadata = new FileMetadata.Builder()
+                .originalName(file.getOriginalFilename())
+                .gridFsId(gridFsId)
+                .contentType(file.getContentType())
+                .size(file.getSize())
+                .checksum(calculateChecksum(file))
+                .uploadDate(LocalDateTime.now())
+                .build();
+
         metadataRepo.save(metadata);
     }
 
@@ -82,13 +80,13 @@ public class StorageServiceImpl implements StorageService {
 
         List<String> errors = new ArrayList<>();
 
-        for (MultipartFile file : files) {
+        for (var file : files) {
             try {
                 if (!file.isEmpty()) {
                     store(file);
                 }
             } catch (StorageException e) {
-                errors.add(file.getOriginalFilename() + ": " + e.getMessage());
+                errors.add("%s: %s".formatted(file.getOriginalFilename(), e.getMessage()));
             }
         }
 
@@ -120,7 +118,7 @@ public class StorageServiceImpl implements StorageService {
             throw new StorageFileNotFoundException("File not found: " + originalName);
         }
 
-        gridFsService.deleteFile(metadata.getGridFsId());
+        gridFsService.deleteFile(metadata.gridFsId());
         metadataRepo.delete(metadata);
     }
 

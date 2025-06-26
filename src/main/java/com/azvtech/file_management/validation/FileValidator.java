@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
-public class FileValidator {
+public final class FileValidator {
 
     private final Set<String> allowedMimeTypes;
     private final Set<String> allowedExtensions;
@@ -23,7 +23,6 @@ public class FileValidator {
         if (file == null) {
             throw new StorageException("File cannot be null");
         }
-
         validateEmptyFile(file);
         validateFileSize(file);
         validateContentType(file);
@@ -40,8 +39,7 @@ public class FileValidator {
     private void validateFileSize(MultipartFile file) {
         if (file.getSize() > maxFileSize) {
             throw new StorageException(
-                    String.format("File size exceeds %dMB limit",
-                            maxFileSize / (1024 * 1024)));
+                    "File size exceeds %dMB limit".formatted(maxFileSize / (1024 * 1024)));
         }
     }
 
@@ -49,7 +47,7 @@ public class FileValidator {
         String contentType = file.getContentType();
         if (contentType == null || !allowedMimeTypes.contains(contentType)) {
             throw new StorageException(
-                    String.format("MIME type ‘%s’ is not supported", contentType));
+                    "MIME type '%s' is not supported".formatted(contentType));
         }
     }
 
@@ -64,20 +62,23 @@ public class FileValidator {
 
         if (!allowedExtensions.contains(fileExtension)) {
             throw new StorageException(
-                    String.format("Extension ‘.%s’ is not allowed", fileExtension));
+                    "Extension '.%s' is not allowed".formatted(fileExtension));
         }
     }
 
     private void validateMimeTypeConsistency(MultipartFile file) {
         String contentType = file.getContentType();
         String originalFilename = file.getOriginalFilename();
-        assert originalFilename != null;
+
+        if (originalFilename == null) {
+            throw new StorageException("Invalid file name");
+        }
+
         String fileExtension = originalFilename.substring(
                 originalFilename.lastIndexOf(".") + 1).toLowerCase();
 
         if (!isMimeTypeMatchesExtension(contentType, fileExtension)) {
-            throw new StorageException(
-                    "File extension does not match the declared MIME type");
+            throw new StorageException("File extension does not match the declared MIME type");
         }
     }
 
