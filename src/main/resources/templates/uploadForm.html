@@ -265,22 +265,11 @@
             <td th:text="${#temporals.format(file.uploadDate, 'dd/MM/yyyy HH:mm')}"></td>
             <td class="file-actions">
                 <a th:if="${#strings.startsWith(file.contentType, 'image/') or file.contentType == 'application/pdf' or #strings.startsWith(file.contentType, 'text/')}"
-                   th:href="@{'/api/v1/file/download/' + ${file.originalName} + '?view=true'}"
+                   th:href="@{'/api/v1/file/' + ${file.originalName} + '?view=true'}"
                    target="_blank"
                    th:text="'Visualizar'"
                    aria-label="Visualizar arquivo"></a>
-                <a th:href="@{'/api/v1/file/download/' + ${file.originalName}}"
-                   th:text="'Download'"
-                   aria-label="Download do arquivo"
-                   download></a>
-            </td>
-            <td class="file-actions">
-                <a th:if="${#strings.startsWith(file.contentType, 'image/') or file.contentType == 'application/pdf' or #strings.startsWith(file.contentType, 'text/')}"
-                   th:href="@{'/api/v1/file/download/' + ${file.originalName} + '?view=true'}"
-                   target="_blank"
-                   th:text="'Visualizar'"
-                   aria-label="Visualizar arquivo"></a>
-                <a th:href="@{'/api/v1/file/download/' + ${file.originalName}}"
+                <a th:href="@{'/api/v1/file/' + ${file.originalName}}"
                    th:text="'Download'"
                    aria-label="Download do arquivo"
                    download></a>

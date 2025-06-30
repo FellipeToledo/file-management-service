@@ -11,9 +11,7 @@ public final class FileValidator {
     private final Set<String> allowedExtensions;
     private final long maxFileSize;
 
-    public FileValidator(Set<String> allowedMimeTypes,
-                         Set<String> allowedExtensions,
-                         long maxFileSize) {
+    public FileValidator(Set<String> allowedMimeTypes, Set<String> allowedExtensions, long maxFileSize) {
         this.allowedMimeTypes = Set.copyOf(allowedMimeTypes);
         this.allowedExtensions = Set.copyOf(allowedExtensions);
         this.maxFileSize = maxFileSize;
@@ -21,8 +19,9 @@ public final class FileValidator {
 
     public void validate(MultipartFile file) {
         if (file == null) {
-            throw new StorageException("File cannot be null");
+            throw new StorageException.InvalidFileException("File cannot be null");
         }
+
         validateEmptyFile(file);
         validateFileSize(file);
         validateContentType(file);
@@ -32,9 +31,10 @@ public final class FileValidator {
 
     private void validateEmptyFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new StorageException("Empty file not allowed");
+            throw new StorageException.InvalidFileException("Empty file not allowed");
         }
     }
+
 
     private void validateFileSize(MultipartFile file) {
         if (file.getSize() > maxFileSize) {
@@ -46,8 +46,7 @@ public final class FileValidator {
     private void validateContentType(MultipartFile file) {
         String contentType = file.getContentType();
         if (contentType == null || !allowedMimeTypes.contains(contentType)) {
-            throw new StorageException(
-                    "MIME type '%s' is not supported".formatted(contentType));
+            throw new StorageException("MIME type '%s' is not supported".formatted(contentType));
         }
     }
 
@@ -61,8 +60,7 @@ public final class FileValidator {
                 originalFilename.lastIndexOf(".") + 1).toLowerCase();
 
         if (!allowedExtensions.contains(fileExtension)) {
-            throw new StorageException(
-                    "Extension '.%s' is not allowed".formatted(fileExtension));
+            throw new StorageException("Extension '.%s' is not allowed".formatted(fileExtension));
         }
     }
 
@@ -84,11 +82,11 @@ public final class FileValidator {
 
     private boolean isMimeTypeMatchesExtension(String mimeType, String extension) {
         return switch (extension) {
-            case "pdf" -> mimeType.equals("application/pdf");
-            case "jpg", "jpeg" -> mimeType.equals("image/jpeg");
-            case "png" -> mimeType.equals("image/png");
-            case "gif" -> mimeType.equals("image/gif");
-            case "txt" -> mimeType.equals("text/plain");
+            case "pdf" -> "application/pdf".equals(mimeType);
+            case "jpg", "jpeg" -> "image/jpeg".equals(mimeType);
+            case "png" -> "image/png".equals(mimeType);
+            case "gif" -> "image/gif".equals(mimeType);
+            case "txt" -> "text/plain".equals(mimeType);
             default -> true;
         };
     }

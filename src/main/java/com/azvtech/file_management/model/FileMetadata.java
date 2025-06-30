@@ -38,6 +38,10 @@ public record  FileMetadata (
          private User owner;
         */
 ){
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
         private String id;
         private String originalName;

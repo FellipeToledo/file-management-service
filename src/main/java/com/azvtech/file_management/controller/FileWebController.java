@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/web/file")
 public class FileWebController {
@@ -24,7 +26,7 @@ public class FileWebController {
 
     @GetMapping("/upload")
     public String uploadForm(Model model) {
-        model.addAttribute("files", storageService.findAll());
+        model.addAttribute("files", storageService.loadAllMetadata());
         return "uploadForm";
     }
 
@@ -52,7 +54,7 @@ public class FileWebController {
                 return "redirect:/web/file/upload";
             }
 
-            storageService.storeMultiple(files);
+            storageService.storeMultiple(List.of(files));
             redirectAttributes.addFlashAttribute("message",
                     files.length + " files were sent successfully");
         } catch (StorageException e) {

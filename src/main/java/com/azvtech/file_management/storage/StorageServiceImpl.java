@@ -1,17 +1,18 @@
 package com.azvtech.file_management.storage;
 
+import com.azvtech.file_management.config.StorageProperties;
 import com.azvtech.file_management.exception.StorageException;
 import com.azvtech.file_management.exception.StorageFileNotFoundException;
 import com.azvtech.file_management.model.FileMetadata;
 import com.azvtech.file_management.repository.FileMetadataRepository;
 import com.azvtech.file_management.validation.FileValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,60 +22,53 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+@Slf4j
 @Service
+@Transactional
 public final class StorageServiceImpl implements StorageService {
 
+    private final boolean allowDuplicateFiles;
     private final GridFsService gridFsService;
     private final FileValidator fileValidator;
     private final FileMetadataRepository metadataRepo;
 
-    @Autowired
     public StorageServiceImpl(
-            @Value("#{'${storage.allowed-mime-types}'.split(',')}") Set<String> allowedMimeTypes,
-            @Value("#{'${storage.allowed-extensions}'.split(',')}") Set<String> allowedExtensions,
-            @Value("${storage.max-file-size-mb}") long maxFileSizeMB,
+            StorageProperties storageProperties,
             FileMetadataRepository metadataRepo,
             GridFsService gridFsService) {
-
+        this.allowDuplicateFiles = storageProperties.allowDuplicateFiles();
         this.fileValidator = new FileValidator(
-                Set.copyOf(allowedMimeTypes),
-                Set.copyOf(allowedExtensions),
-                maxFileSizeMB * 1024 * 1024
+                storageProperties.allowedMimeTypes(),
+                storageProperties.allowedExtensions(),
+                storageProperties.maxFileSizeMb() * 1024 * 1024
         );
         this.metadataRepo = metadataRepo;
         this.gridFsService = gridFsService;
+        log.info("StorageService initialized with max file size: {}MB", storageProperties.maxFileSizeMb());
     }
 
     @Override
     public void store(MultipartFile file) {
-        fileValidator.validate(file);
+        if (!allowDuplicateFiles && existsByOriginalName(file.getOriginalFilename())) {
+            throw new StorageException.DuplicateFileException(file.getOriginalFilename());
+        }
+
+        fileValidator.validate(file); // Já lança InvalidFileException se houver erro
 
         try {
             String gridFsId = gridFsService.storeFile(file);
             saveFileMetadata(file, gridFsId);
+            log.info("File stored successfully: {}", file.getOriginalFilename());
         } catch (IOException e) {
             throw new StorageException("Failed to store file", e);
         }
     }
 
-    private void saveFileMetadata(MultipartFile file, String gridFsId) throws IOException {
-        var metadata = new FileMetadata.Builder()
-                .originalName(file.getOriginalFilename())
-                .gridFsId(gridFsId)
-                .contentType(file.getContentType())
-                .size(file.getSize())
-                .checksum(calculateChecksum(file))
-                .uploadDate(LocalDateTime.now())
-                .build();
-
-        metadataRepo.save(metadata);
-    }
 
     @Override
-    public void storeMultiple(MultipartFile[] files) {
-        if (files == null || files.length == 0) {
+    public void storeMultiple(List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
             throw new StorageException("No files sent.");
         }
 
@@ -97,7 +91,6 @@ public final class StorageServiceImpl implements StorageService {
 
     @Override
     public Resource loadAsResource(String gridFsId) {
-
         try {
             InputStream inputStream = gridFsService.getFileStream(gridFsId);
             return new InputStreamResource(inputStream);
@@ -107,24 +100,45 @@ public final class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FileMetadata findByOriginalName(String originalName) {
-        return metadataRepo.findByOriginalName(originalName);
+        return metadataRepo.findByOriginalName(originalName)
+                .orElseThrow(() -> new StorageFileNotFoundException("File not found: " + originalName));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FileMetadata> loadAllMetadata() {
+        return metadataRepo.findAll();
     }
 
     @Override
     public void delete(String originalName) {
-        FileMetadata metadata = metadataRepo.findByOriginalName(originalName);
-        if (metadata == null) {
-            throw new StorageFileNotFoundException("File not found: " + originalName);
-        }
+        FileMetadata metadata = metadataRepo.findByOriginalName(originalName)
+                .orElseThrow(() -> new StorageFileNotFoundException("File not found: " + originalName));
 
         gridFsService.deleteFile(metadata.gridFsId());
         metadataRepo.delete(metadata);
+        log.info("File deleted successfully: {}", originalName);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<FileMetadata> findAll() {
-        return metadataRepo.findAll();
+    public boolean existsByOriginalName(String originalName) {
+        return metadataRepo.findByOriginalName(originalName).isPresent();
+    }
+
+    private void saveFileMetadata(MultipartFile file, String gridFsId) throws IOException {
+        var metadata = FileMetadata.builder()
+                .originalName(file.getOriginalFilename())
+                .gridFsId(gridFsId)
+                .contentType(file.getContentType())
+                .size(file.getSize())
+                .checksum(calculateChecksum(file))
+                .uploadDate(LocalDateTime.now())
+                .build();
+
+        metadataRepo.save(metadata);
     }
 
     private String calculateChecksum(MultipartFile file) throws IOException {
